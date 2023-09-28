@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<textarea  readonly name="sentence_original" cols="40" rows="20" id="sentence_original"
+                      placeholder={{sentence.sentence_original}} required>{{sentence.sentence_original}}</textarea>
+
+<textarea readonly class="form-control" name="sentence_simplified" cols="40" rows="20" id="sentence_simplified"
+                      placeholder={{sentence.sentence_original}} required>{{sentence.sentence_simplified}}</textarea>
+
+
+
+    <form method="POST">
+<textarea class="form-control" name="sentence_validate" cols="40" rows="20" id="sentence_validate" required></textarea>
+        <input type="submit" value="Submit">
+    </form>
+
+
+</body>
+</html>

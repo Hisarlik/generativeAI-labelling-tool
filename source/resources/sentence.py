@@ -1,3 +1,4 @@
+from flask import render_template, request
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from sqlalchemy.exc import SQLAlchemyError
@@ -5,7 +6,25 @@ from source.db import db
 from source.models.sentences import SentenceModel
 from source.schemas import SentenceSchema, SentenceUpdateSchema
 
-sentblueprint = Blueprint("Sentences", "sentences", description="CRUD oraciones")
+sentblueprint = Blueprint("Sentences", "sentences",
+                          description="CRUD oraciones")
+
+
+@sentblueprint.route('/')
+def get_example():
+    return render_template('example.html')
+
+
+@sentblueprint.route('/sent/<string:sent_id>',methods=['GET', 'POST'])
+def get_sentences(sent_id):
+    if request.method == 'POST':
+        # Retrieve the text from the textarea
+        text = request.form.get('sentence_validate')
+        print(text)
+        return render_template('example.html')
+    sentence = SentenceModel.query.get_or_404(sent_id)
+    return render_template('sentence_validation.html', sentence=sentence)
+
 
 
 @sentblueprint.route("/sentence/<string:sent_id>")
@@ -40,7 +59,7 @@ class Sentence(MethodView):
         return
 
 
-@sentblueprint.route("/sentences")
+@sentblueprint.route('/sentences')
 class GetSentences(MethodView):
     @sentblueprint.response(200, SentenceSchema(many=True))
     def get(self):
