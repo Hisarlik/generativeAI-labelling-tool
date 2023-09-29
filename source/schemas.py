@@ -6,9 +6,11 @@ class SentenceSchema(Schema):
     sentence_simplified = fields.Str(required=True)
     document_name = fields.Str()
     document_sentence_id = fields.Int()
+    valid = fields.Bool()
 
 class SentenceUpdateSchema(Schema):
     sentence_original = fields.Str()
     sentence_simplified = fields.Str()
     document_name = fields.Str()
     document_sentence_id = fields.Int()
+    valid = fields.Bool()

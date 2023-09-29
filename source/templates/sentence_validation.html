@@ -14,7 +14,8 @@
 
 
     <form method="POST">
-<textarea class="form-control" name="sentence_validate" cols="40" rows="20" id="sentence_validate" required></textarea>
+<textarea class="form-control" name="sentence_manual" cols="40" rows="20" id="sentence_manual" required>{{sentence.sentence_simplified}}</textarea>
+<input type="checkbox" name="valid" value = '1' {% if sentence.valid == 1 %} checked=true {% endif %}>Valid
         <input type="submit" value="Submit">
     </form>
 
