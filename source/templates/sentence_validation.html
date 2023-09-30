@@ -4,6 +4,31 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+<style>
+textarea {
+  width: 100%;
+  height: 150px;
+  padding: 12px 20px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  font-size: 16px;
+  resize: none;
+}
+.button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+</style>
 <body>
 <textarea  readonly name="sentence_original" cols="40" rows="20" id="sentence_original"
                       placeholder={{sentence.sentence_original}} required>{{sentence.sentence_original}}</textarea>
@@ -15,8 +40,8 @@
 
     <form method="POST">
 <textarea class="form-control" name="sentence_manual" cols="40" rows="20" id="sentence_manual" required>{{sentence.sentence_simplified}}</textarea>
-<input type="checkbox" name="valid" value = '1' {% if sentence.valid == 1 %} checked=true {% endif %}>Valid
-        <input type="submit" value="Submit">
+<input type="checkbox" name="valid" value = '1' {% if sentence.valid == 1 %} checked=true {% endif %}>Oración válida
+        <button type="submit" class="button">Validar Simplificación</button>
     </form>
 
 

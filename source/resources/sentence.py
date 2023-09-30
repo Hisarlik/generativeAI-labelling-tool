@@ -16,8 +16,10 @@ sentblueprint = Blueprint("Sentences", "sentences",
 @sentblueprint.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        if request.form.get('another_sentence') == 'another':
-            sentence = db.session.query(SentenceModel).order_by(func.random()).first()
+        if request.form.get('another_sentence') == 'Comenzar':
+            results = db.session.scalars(db.session.query(ValidationModel.sentence_id)).all()
+            print(results)
+            sentence = db.session.query(SentenceModel).filter(~SentenceModel.sentence_id.in_(results)).order_by(func.random()).first()
             return redirect("/sent/"+str(sentence.sentence_id))
     elif request.method == 'GET':
         return render_template('index.html')
@@ -51,7 +53,12 @@ def get_sentences(sent_id):
         sentence.valid = bool(valid)
         db.session.commit()
 
-        return render_template('index.html')
+        results = db.session.scalars(db.session.query(ValidationModel.sentence_id)).all()
+        print(results)
+        sentence = db.session.query(SentenceModel).filter(~SentenceModel.sentence_id.in_(results)).order_by(
+            func.random()).first()
+        return redirect("/sent/" + str(sentence.sentence_id))
+
     sentence = SentenceModel.query.get_or_404(sent_id)
     return render_template('sentence_validation.html', sentence=sentence)
 
