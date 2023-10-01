@@ -38,3 +38,28 @@ class ValidationModel(db.Model):
         self.sentence_manual = sentence_manual
         self.sentence_id = sentence_id
 
+
+class WordModel(db.Model):
+    __tablename__ = "words"
+
+    word_id = db.Column(db.Integer, primary_key=True)
+    word_original1 = db.Column(db.String(100), unique=False, nullable=False)
+    word_simple1 = db.Column(db.String(100), unique=False, nullable=True)
+    word_original2 = db.Column(db.String(100), unique=False, nullable=True)
+    word_simple2= db.Column(db.String(100), unique=False, nullable=True)
+    word_original3 = db.Column(db.String(100), unique=False, nullable=True)
+    word_simple3 = db.Column(db.String(100), unique=False, nullable=True)
+    sentence_id = db.Column(db.Integer, db.ForeignKey('sentences.sentence_id'))
+
+    def __init__(self, word_original1, word_simple1, word_original2, word_simple2, word_original3,
+                 word_simple3, sentence_id=sentence_id, word_id=None):
+        if word_id:
+            self.word_id = word_id
+        self.word_original1 = word_original1
+        self.word_simple1 = word_simple1
+        self.word_original2 = word_original2
+        self.word_simple2 = word_simple2
+        self.word_original3 = word_original3
+        self.word_simple3 = word_simple3
+        self.sentence_id = sentence_id
+

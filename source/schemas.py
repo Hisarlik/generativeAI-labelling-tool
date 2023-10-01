@@ -14,3 +14,4 @@ class SentenceUpdateSchema(Schema):
     document_name = fields.Str()
     document_sentence_id = fields.Int()
     valid = fields.Bool()
+

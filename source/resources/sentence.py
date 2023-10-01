@@ -6,7 +6,7 @@ from sqlalchemy.sql import func
 from sqlalchemy.orm import load_only
 from source.db import db
 import random
-from source.models.sentences import SentenceModel, ValidationModel
+from source.models.sentences import SentenceModel, ValidationModel, WordModel
 from source.schemas import SentenceSchema, SentenceUpdateSchema
 
 sentblueprint = Blueprint("Sentences", "sentences",
@@ -34,11 +34,24 @@ def get_sentences(sent_id):
     if request.method == 'POST':
         # Retrieve the text from the textarea
         sentence_manual = request.form.get('sentence_manual')
+        word_original1 = request.form.get('word_original1')
+        word_simple1 = request.form.get('word_simple1')
+        word_original2 = request.form.get('word_original2')
+        word_simple2 = request.form.get('word_simple2')
+        word_original3 = request.form.get('word_original3')
+        word_simple3 = request.form.get('word_simple3')
         valid = request.form.get('valid')
+
+        ## Validation object
         validation_data = dict(sentence_manual=sentence_manual, sentence_id=sent_id)
         validation = ValidationModel(**validation_data)
+
+
+
+        ## Test if exists
         result = db.session.query(ValidationModel).filter(ValidationModel.sentence_id == sent_id)
-        print("res",result)
+
+        ## Validations
         for row in result:
             if row:
                 abort(500, message="La simplificación de esta oración ya existe")
@@ -49,6 +62,28 @@ def get_sentences(sent_id):
         except SQLAlchemyError:
             abort(500, message="An error occurred while creating a validation.")
 
+
+        ## Words
+        if word_original1 or word_original2 or word_original3:
+            word_data = dict(word_original1=word_original1,
+                             word_simple1=word_simple1,
+                             word_original2=word_original2,
+                             word_simple2=word_simple2,
+                             word_original3=word_original3,
+                             word_simple3=word_simple3,
+                             sentence_id=sent_id)
+            print(word_data)
+            word = WordModel(**word_data)
+
+            try:
+                db.session.add(word)
+                db.session.commit()
+            except SQLAlchemyError as e:
+                print(e)
+                abort(500, message="An error occurred while creating a word synonyms.")
+
+
+        ## Update valid sentence
         sentence = db.session.query(SentenceModel).get(sent_id)
         sentence.valid = bool(valid)
         db.session.commit()

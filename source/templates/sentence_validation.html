@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <style>
-textarea {
+textarea.form-control {
   width: 100%;
   height: 150px;
   padding: 12px 20px;
@@ -30,17 +30,31 @@ textarea {
 }
 </style>
 <body>
-<textarea  readonly name="sentence_original" cols="40" rows="20" id="sentence_original"
+<h2>Nombre del periódico:{{sentence.document_name}}</h2>
+<h3>Original:</h3>
+<textarea  class="form-control"readonly name="sentence_original" cols="40" rows="20" id="sentence_original"
                       placeholder={{sentence.sentence_original}} required>{{sentence.sentence_original}}</textarea>
-
-<textarea readonly class="form-control" name="sentence_simplified" cols="40" rows="20" id="sentence_simplified"
+<h3>Simplificación GPT:</h3>
+<textarea class="form-control" readonly class="form-control" name="sentence_simplified" cols="40" rows="20" id="sentence_simplified"
                       placeholder={{sentence.sentence_original}} required>{{sentence.sentence_simplified}}</textarea>
 
 
 
     <form method="POST">
-<textarea class="form-control" name="sentence_manual" cols="40" rows="20" id="sentence_manual" required>{{sentence.sentence_simplified}}</textarea>
-<input type="checkbox" name="valid" value = '1' {% if sentence.valid == 1 %} checked=true {% endif %}>Oración válida
+        <h3>Simplificación Manual:</h3>
+        <textarea class="form-control" name="sentence_manual" cols="40" rows="20" id="sentence_manual" required>{{sentence.sentence_simplified}}</textarea>
+        <input type="checkbox" name="valid" value = '1' {% if sentence.valid == 1 %} checked=true {% endif %}>Oración válida
+        <br>
+        Palabra Original:<textarea name="word_original1" cols="10" rows="1" id="word_original1"></textarea>
+        Sinónimos:<textarea name="word_simple1" cols="10" rows="1" id="word_simple1" ></textarea>
+        <br/>
+        Palabra Original:<textarea name="word_original2" cols="10" rows="1" id="word_original2"></textarea>
+        Sinónimos:<textarea name="word_simple2" cols="10" rows="1" id="word_simple2" ></textarea>
+        <br/>
+        Palabra Original:<textarea name="word_original3" cols="10" rows="1" id="word_original3"></textarea>
+        Sinónimos:<textarea name="word_simple3" cols="10" rows="1" id="word_simple3" ></textarea>
+        <br/>
+        <br>
         <button type="submit" class="button">Validar Simplificación</button>
     </form>
 
