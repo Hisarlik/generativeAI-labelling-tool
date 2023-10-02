@@ -1,4 +1,8 @@
 from source.db import db
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, BooleanField
+from wtforms.validators import InputRequired, Email, Length
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 class SentenceModel(db.Model):
     __tablename__ = "sentences"
@@ -62,4 +66,20 @@ class WordModel(db.Model):
         self.word_original3 = word_original3
         self.word_simple3 = word_simple3
         self.sentence_id = sentence_id
+
+class LoginForm(FlaskForm):
+    username = StringField('username', validators=[InputRequired(), Length(min=5, max=15)])
+    password = PasswordField('password', validators=[InputRequired(), Length(min=5, max=10)])
+    remember = BooleanField('Remember me')
+
+class RegisterationForm(FlaskForm):
+    email = StringField('Email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)])
+    username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
+    password = PasswordField('password', validators=[InputRequired(), Length(min=5, max=15)])
+
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(15), unique=True)
+    email = db.Column(db.String(50), unique=True)
+    password = db.Column(db.String(80))
 

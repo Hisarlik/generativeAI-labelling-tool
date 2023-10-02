@@ -5,7 +5,11 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql import func
 from sqlalchemy.orm import load_only
 from source.db import db
+from source.models.sentences import LoginForm, User, RegisterationForm
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import random
+from werkzeug.security import generate_password_hash, check_password_hash
+
 from source.models.sentences import SentenceModel, ValidationModel, WordModel
 from source.schemas import SentenceSchema, SentenceUpdateSchema
 
@@ -26,8 +30,40 @@ def index():
 
     return render_template("index.html")
 
+@sentblueprint.route('/login', methods=['GET', 'POST'])
+def login():
+        form = LoginForm()
+        if form.validate_on_submit():
+            user = User.query.filter_by(username=form.username.data).first()
+            if user:
+                if check_password_hash(user.password, form.password.data):
+                    login_user(user, remember=form.remember.data)
+                    return redirect(url_for('dashboard'))
+            return '<h1>Invalid username or password</h1>'
+            #return '<h1>' + form.username.data + '' + form.password.data + '</h1>'
+        return render_template('login.html', form=form)
 
 
+login_manager = LoginManager()
+login_manager.login_view = 'login'
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+
+@sentblueprint.route('/signup', methods=['GET', 'POST'])
+def signup():
+    form = RegisterationForm()
+    print(form)
+    if form.is_submitted():
+        hashed_password = generate_password_hash(form.password.data, method= 'sha256')
+        new_user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+
+        return '<h1> New user has been created </h1>'
+        #return '<h1>' + form.username.data + ' ' + form.email.data + ' ' + form.password.data + '</h1>'
+    return render_template('signup.html', form=form)
 
 @sentblueprint.route('/sent/<string:sent_id>',methods=['GET', 'POST'])
 def get_sentences(sent_id):

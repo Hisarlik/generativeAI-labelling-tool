@@ -2,3 +2,6 @@ Flask
 db-sqlite3
 Flask-SQLAlchemy
 flask-smorest
+Flask-Login
+Flask-WTF
+email_validator
