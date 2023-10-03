@@ -5,3 +5,5 @@ flask-smorest
 Flask-Login
 Flask-WTF
 email_validator
+flask_bootstrap
+pandas

@@ -1,43 +1,58 @@
 from flask import Flask, render_template, redirect, url_for
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
+from flask_smorest import Api
 import secrets
 import os
+from source.db import db
+from source.models.user import User, LoginForm, RegisterationForm
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
-from wtforms import StringField, PasswordField, BooleanField
-from wtforms.validators import InputRequired, Email, Length
+
+from source.resources.sentence import sentblueprint as sentenceBlueprint
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
-basedir = os.path.abspath(os.path.dirname(__file__))
 secret_key = secrets.token_hex(16)
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+
 app = Flask(__name__)
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-Bootstrap(app)
-db = SQLAlchemy(app)
+
+app.config['SECRET_KEY'] = secret_key
 app.config['SQLALCHEMY_DATABASE_URI'] = \
     'sqlite:///' + os.path.join(basedir, 'database.db')
-app.config['SECRET_KEY'] = secret_key
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# swagger documentation details
+app.config["PROPAGATE_EXCEPTIONS"] = True
+app.config["API_TITLE"] = "Employee Crud Example"
+app.config["API_VERSION"] = "v1"
+app.config["OPENAPI_VERSION"] = "3.0.3"
+app.config["OPENAPI_URL_PREFIX"] = "/"
+app.config["OPENAPI_SWAGGER_UI_PATH"] = "/swagger-ui"
+app.config[
+    "OPENAPI_SWAGGER_UI_URL"
+] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
+
+
+Bootstrap(app)
+
+db.init_app(app)
+api = Api(app)
+
+with app.app_context():
+    db.create_all()
+
+#register employee blueprint
+api.register_blueprint(sentenceBlueprint)
+
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view= 'login'
-class User(UserMixin,db.Model):
-    id = db.Column(db.Integer, primary_key= True)
-    username = db.Column(db.String(15), unique= True)
-    email = db.Column(db.String(50), unique=True)
-    password = db.Column(db.String(80))
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
-
-class LoginForm(FlaskForm):
-    username= StringField('username', validators=[InputRequired(), Length(min=5, max=15)])
-    password = PasswordField('password', validators=[InputRequired(), Length(min=5, max=10)])
-    remember = BooleanField('Remember me')
-class RegisterationForm(FlaskForm):
-    email= StringField('Email', validators=[InputRequired(),Email(message='Invalid email'), Length(max=50)])
-    username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
-    password = PasswordField('password', validators=[InputRequired(), Length(min=5, max=15)])
 
 
 
@@ -53,7 +68,7 @@ def login():
         if user:
             if check_password_hash(user.password, form.password.data):
                 login_user(user, remember=form.remember.data)
-                return redirect(url_for('dashboard'))
+                return render_template('index_diario.html')
         return '<h1>Invalid username or password</h1>'
         #return '<h1>' + form.username.data + '' + form.password.data + '</h1>'
     return render_template('login.html', form=form)
