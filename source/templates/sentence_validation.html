@@ -1,63 +1,69 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<style>
-textarea.form-control {
-  width: 100%;
-  height: 150px;
-  padding: 12px 20px;
-  box-sizing: border-box;
-  border: 2px solid #ccc;
-  border-radius: 4px;
-  background-color: #f8f8f8;
-  font-size: 16px;
-  resize: none;
-}
-.button {
-  background-color: #4CAF50;
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-}
-</style>
-<body>
-<h2>Nombre del periódico:{{sentence.document_name}}</h2>
+{% extends "bootstrap/base.html" %}
+
+{% block title %}
+Diario de Madrid
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+
+{% endblock %}
+
+
+{% block content %}
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+
+          <a class="navbar-brand" href="#">Simplificación Diario de Madrid</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="{{ url_for('logout') }}">Salir</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+             <div class="row">
+
+                 </div>
+                     <div class="row">
+            <h3>Nombre del periódico:{{sentence.document_name}}</h3>
+                 </div>
+
+            <h3>Nombre del periódico:{{sentence.document_name.split("TXTs")[1][1:]}}</h3>
+
+
 <h3>Original:</h3>
-<textarea  class="form-control"readonly name="sentence_original" cols="40" rows="20" id="sentence_original"
+
+<textarea  class="form-control"readonly name="sentence_original" cols="40" rows="5" id="sentence_original"
                       placeholder={{sentence.sentence_original}} required>{{sentence.sentence_original}}</textarea>
 <h3>Simplificación GPT:</h3>
-<textarea class="form-control" readonly class="form-control" name="sentence_simplified" cols="40" rows="20" id="sentence_simplified"
+<textarea class="form-control" readonly class="form-control" name="sentence_simplified" cols="40" rows="5" id="sentence_simplified"
                       placeholder={{sentence.sentence_original}} required>{{sentence.sentence_simplified}}</textarea>
 
 
 
     <form method="POST">
         <h3>Simplificación Manual:</h3>
-        <textarea class="form-control" name="sentence_manual" cols="40" rows="20" id="sentence_manual" required>{{sentence.sentence_simplified}}</textarea>
+        <textarea class="form-control" name="sentence_manual" cols="40" rows="5" id="sentence_manual" required>{{sentence.sentence_simplified}}</textarea>
         <input type="checkbox" name="valid" value = '1' {% if sentence.valid == 1 %} checked=true {% endif %}>Oración válida
-        <br>
-        Palabra Original:<textarea name="word_original1" cols="10" rows="1" id="word_original1"></textarea>
-        Sinónimos:<textarea name="word_simple1" cols="20" rows="1" id="word_simple1" ></textarea>
         <br/>
-        Palabra Original:<textarea name="word_original2" cols="10" rows="1" id="word_original2"></textarea>
+        Palabra Original 1:<textarea name="word_original1" cols="12" rows="1" id="word_original1"></textarea>
+        Sinónimos:<textarea name="word_simple1" cols="20" rows="1" id="word_simple1" ></textarea>
+            <br/>
+        Palabra Original 2:<textarea name="word_original2" cols="12" rows="1" id="word_original2"></textarea>
         Sinónimos:<textarea name="word_simple2" cols="20" rows="1" id="word_simple2" ></textarea>
         <br/>
-        Palabra Original:<textarea name="word_original3" cols="10" rows="1" id="word_original3"></textarea>
+        Palabra Original 3:<textarea name="word_original3" cols="12" rows="1" id="word_original3"></textarea>
         Sinónimos:<textarea name="word_simple3" cols="20" rows="1" id="word_simple3" ></textarea>
         <br/>
         <br>
-        <button type="submit" class="button">Validar Simplificación</button>
+        <button type="submit" class="btn btn-success">Validar Simplificación</button>
     </form>
+    </div>
 
-
-</body>
-</html>
+{% endblock %}
