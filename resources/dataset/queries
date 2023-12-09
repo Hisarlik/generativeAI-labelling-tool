@@ -1,0 +1,8 @@
+select * from sentences where sentence_original like 'D. Felipe Fernandez, que vive calle del Medio dia grande n. 8 qto. principal casa que llaman del Sol, copiará de buena letra quanto se le encargue, á real el pliego de 21 lineas por llana, y á real y med.';
+select * from sentences where valid like '0';
+select count(*) from sentences;
+
+delete from validations where validation_id in (select validation_id from validations join sentences on validations.sentence_id=sentences.sentence_id where valid like '0');
+delete from sentences where valid like '0';
+
+select * from validations;
